@@ -58,19 +58,19 @@ namespace rt
     return Vector3(t * rhs._x, t * rhs._y, t * rhs._z);
   }
 
-  inline float dot(const Vector3& lhs, const Vector3& rhs)
+  inline float Dot(const Vector3& lhs, const Vector3& rhs)
   {
     return lhs._x * rhs._x + lhs._y * rhs._y + lhs._z * rhs._z;
   }
 
-  inline Vector3 cross(const Vector3& lhs, const Vector3& rhs)
+  inline Vector3 Cross(const Vector3& lhs, const Vector3& rhs)
   {
     return Vector3(lhs._y * rhs._z - lhs._z * rhs._y, 
       lhs._z * rhs._x - lhs._x * rhs._z, 
       lhs._x * rhs._y - lhs._y * rhs._x);
   }
 
-  inline Vector3 makeUnit(const Vector3& vec)
+  inline Vector3 MakeUnit(const Vector3& vec)
   {
     return vec / vec.length();
   }

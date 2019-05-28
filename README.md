@@ -6,3 +6,7 @@
 
 ![](https://github.com/xlxlzh/RayTracingLearning/raw/master/images/image_sky.png)
 
+#### 渲染球体
+
+![](https://github.com/xlxlzh/RayTracingLearning/raw/master/images/image_sphere.png)
+
