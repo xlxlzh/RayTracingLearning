@@ -72,7 +72,6 @@ namespace rt
 
   inline Vector3 makeUnit(const Vector3& vec)
   {
-    float length = vec.length();
-    return Vector3(vec._x / length, vec._y / length, vec._z / length);
+    return vec / vec.length();
   }
 }

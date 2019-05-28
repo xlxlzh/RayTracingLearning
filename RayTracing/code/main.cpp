@@ -1,10 +1,14 @@
 #include <iostream>
+#include <fstream>
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 
 #include "include/stb/stb_image_write.h"
 #include "include/Ray.h"
 
 using namespace rt;
+
+const int WIDTH = 400;
+const int HEIGHT = 200;
 
 rt::Vector3 Color(const rt::Ray& ray)
 {
@@ -13,44 +17,40 @@ rt::Vector3 Color(const rt::Ray& ray)
   return (1.0 - t) * rt::Vector3(1.0, 1.0, 1.0) + t * rt::Vector3(0.5, 0.7, 1.0);
 }
 
-unsigned makeColor(const rt::Vector3& col)
-{
-  unsigned r = col._x * 255;
-  unsigned g = col._y * 255;
-  unsigned b = col._z * 255;
-  unsigned a = 255;
-
-  g = g << 8;
-  b = b << 16;
-  a = a << 24;
-
-  return r | g | b | a;
-}
-
 int main()
 {
-  int width = 200;
-  int height = 100;
-
-  unsigned images[200][100] = { 0 };
-
+  unsigned char images[HEIGHT][WIDTH * 4] = { 0 };
+  
   rt::Vector3 leftCorner(-2.0, -1.0, -1.0);
   rt::Vector3 horizontal(4.0, 0.0, 0.0);
   rt::Vector3 vertical(0.0, 2.0, 0.0);
   rt::Vector3 origin(0.0, 0.0, 0.0);
 
-  for (int j = height - 1; j >= 0; --j)
+  std::ofstream imageOutput;
+  imageOutput.open("image_debug.ppm");
+  imageOutput << "P3\n" << WIDTH << " " << HEIGHT << "\n255\n";
+  
+  for (int j = HEIGHT - 1; j >= 0; --j)
   {
-    for (int i = 0; i < width; ++i)
+    for (int i = 0; i < WIDTH; ++i)
     {
-      float u = float(i) / float(width);
-      float v = float(j) / float(height);
-
+      float u = float(i) / float(WIDTH);
+      float v = float(j) / float(HEIGHT);
+  
       rt::Ray ray(origin, leftCorner + u * horizontal + v * vertical);
       rt::Vector3 col = Color(ray);
-      images[i][j] = makeColor(col);
+
+      int rowIndex = HEIGHT - 1 - j;
+      images[rowIndex][i * 4] = int(col.r() * 255);
+      images[rowIndex][i * 4 + 1] = int(col.g() * 255);
+      images[rowIndex][i * 4 + 2] = int(col.b() * 255);
+      images[rowIndex][i * 4 + 3] = 255;
+      imageOutput << int(255.99 * col._x) << " " << int(255.99 * col._y) << " " << int(255.99 * col._z) << "\n";
     }
   }
 
-  stbi_write_png("test.png", width, height, 4, images, width * 4);
+  imageOutput.close();
+  stbi_write_png("image.png", WIDTH, HEIGHT, 4, images, 0);
+
+  return 0;
 }
