@@ -30,6 +30,7 @@ namespace rt
     Vector3& operator /= (const float t);
 
     Vector3 operator + (const Vector3& rhs) const;
+    Vector3 operator + (const float t) const;
     Vector3 operator - (const Vector3& rhs) const;
     Vector3 operator * (const Vector3& rhs) const;
     Vector3 operator * (const float t) const;

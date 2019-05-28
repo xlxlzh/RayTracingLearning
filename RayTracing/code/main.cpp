@@ -8,20 +8,32 @@
 const int WIDTH = 400;
 const int HEIGHT = 200;
 
-bool HitSphere(const rt::Vector3& center, float radius, const rt::Ray& ray)
+float HitSphere(const rt::Vector3& center, float radius, const rt::Ray& ray)
 {
   rt::Vector3 oc = ray.getOrigin() - center;
   float a = rt::Dot(ray.getDirection(), ray.getDirection());
   float b = 2.0 * rt::Dot(oc, ray.getDirection());
   float c = rt::Dot(oc, oc) - radius * radius;
   float d = b * b - 4 * a * c;
-  return d > 0;
+
+  if (d < 0)
+  {
+    return -1.0;
+  }
+  else
+  {
+    return (-b - sqrt(d)) / (2.0 * a);
+  }
 }
 
 rt::Vector3 Color(const rt::Ray& ray)
 {
-  if (HitSphere(rt::Vector3(0.0, 0.0, -1.0), 0.5, ray))
-    return rt::Vector3(1.0, 0.0, 0.0);
+  float value = HitSphere(rt::Vector3(0.0, 0.0, -1.0), 0.5, ray);
+  if (value > 0.0)
+  {
+    rt::Vector3 normal = rt::MakeUnit(ray.rayCast(value) - rt::Vector3(0.0, 0.0, -1.0));
+    return 0.5 * (normal + 1.0);
+  }
 
   rt::Vector3 dir = rt::MakeUnit(ray.getDirection());
   float t = 0.5 * (dir._y + 1.0);

@@ -61,6 +61,11 @@ namespace rt
     return Vector3(_x + rhs._x, _y + rhs._y, _z + rhs._z);
   }
 
+  Vector3 Vector3::operator + (const float t) const
+  {
+    return Vector3(_x + t, _y + t, _z + t);
+  }
+
   Vector3 Vector3::operator - (const Vector3 & rhs) const
   {
     return Vector3(_x - rhs._x, _y - rhs._y, _z - rhs._z);

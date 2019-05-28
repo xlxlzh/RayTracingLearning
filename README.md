@@ -10,3 +10,6 @@
 
 ![](https://github.com/xlxlzh/RayTracingLearning/raw/master/images/image_sphere.png)
 
+#### 渲染法线
+
+![](https://github.com/xlxlzh/RayTracingLearning/raw/master/images/image_normal.png)
