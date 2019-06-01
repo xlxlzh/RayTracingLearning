@@ -13,3 +13,7 @@
 #### 渲染法线
 
 ![](https://github.com/xlxlzh/RayTracingLearning/raw/master/images/image_normal.png)
+
+#### 两个球体
+
+![](https://github.com/xlxlzh/RayTracingLearning/raw/master/images/two_sphere.png)
