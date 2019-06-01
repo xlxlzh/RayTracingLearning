@@ -1,12 +1,15 @@
 #include <iostream>
 #include <fstream>
 #include <cfloat>
+#include <random>
+#include <ctime>
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 
 #include "include/stb/stb_image_write.h"
 #include "include/Ray.h"
 #include "include/HitableList.h"
 #include "include/Sphere.h"
+#include "include/Camera.h"
 
 const int WIDTH = 400;
 const int HEIGHT = 200;
@@ -62,16 +65,25 @@ int main()
     list[1] = new rt::Sphere(rt::Vector3(0.0, -100.5, -1.0), 100);
 
     rt::Hitable* world = new rt::HitableList(list, 2);
+    rt::Camera mainCamera;
 
+    std::default_random_engine random(time(nullptr));
+    std::uniform_real_distribution<double> dis(0.0, 1.0);
+    int sampleCount = 100;
     for (int j = HEIGHT - 1; j >= 0; --j)
     {
         for (int i = 0; i < WIDTH; ++i)
         {
-            float u = float(i) / float(WIDTH);
-            float v = float(j) / float(HEIGHT);
+            rt::Vector3 col(0.0, 0.0, 0.);
+            for (int s = 0; s < sampleCount; ++s)
+            {
+                float u = float(i + dis(random)) / float(WIDTH);
+                float v = float(j + dis(random)) / float(HEIGHT);
+                rt::Ray ray = mainCamera.getRay(u, v);
+                col += Color(ray, world);
+            }
 
-            rt::Ray ray(origin, leftCorner + u * horizontal + v * vertical);
-            rt::Vector3 col = Color(ray, world);
+            col /= float(sampleCount);
 
             int rowIndex = HEIGHT - 1 - j;
             images[rowIndex][i * 4] = int(col.r() * 255);
