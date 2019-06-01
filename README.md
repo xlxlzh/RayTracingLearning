@@ -17,3 +17,7 @@
 #### 两个球体
 
 ![](https://github.com/xlxlzh/RayTracingLearning/raw/master/images/two_sphere.png)
+
+#### AA
+
+![](https://github.com/xlxlzh/RayTracingLearning/raw/master/images/image_aa.png)
