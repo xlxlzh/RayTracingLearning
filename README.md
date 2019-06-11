@@ -21,3 +21,5 @@
 #### AA
 
 ![](https://github.com/xlxlzh/RayTracingLearning/raw/master/images/image_aa.png)
+
+![](https://github.com/xlxlzh/RayTracingLearning/raw/master/images/image_diffuse.png)

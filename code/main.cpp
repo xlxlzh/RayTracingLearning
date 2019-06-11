@@ -14,30 +14,28 @@
 const int WIDTH = 400;
 const int HEIGHT = 200;
 
-float HitSphere(const rt::Vector3& center, float radius, const rt::Ray& ray)
-{
-    rt::Vector3 oc = ray.getOrigin() - center;
-    float a = rt::Dot(ray.getDirection(), ray.getDirection());
-    float b = 2.0 * rt::Dot(oc, ray.getDirection());
-    float c = rt::Dot(oc, oc) - radius * radius;
-    float d = b * b - 4 * a * c;
+std::default_random_engine random(time(nullptr));
 
-    if (d < 0)
+rt::Vector3 RandomInUnitSphere()
+{
+    std::uniform_real_distribution<double> dis(0.0, 1.0);
+
+    rt::Vector3 p;
+    do
     {
-        return -1.0;
-    }
-    else
-    {
-        return (-b - sqrt(d)) / (2.0 * a);
-    }
+        p = 2.0 * rt::Vector3(dis(random), dis(random), dis(random)) - rt::Vector3(1.0, 1.0, 1.0);
+    } while (p.squaredLength() >= 1.0);
+
+    return p;
 }
 
 rt::Vector3 Color(const rt::Ray& ray, const rt::Hitable* world)
 {
     rt::HitRecord rec;
-    if (world->rayCast(ray, 0.0, FLT_MAX, rec))
+    if (world->rayCast(ray, 0.001, FLT_MAX, rec))
     {
-        return 0.5 * rt::Vector3(rec.normal + 1.0);
+        rt::Vector3 target = rec.p + rec.normal + RandomInUnitSphere();
+        return 0.5 * Color(rt::Ray(rec.p, target - rec.p), world);
     }
     else
     {
@@ -45,6 +43,11 @@ rt::Vector3 Color(const rt::Ray& ray, const rt::Hitable* world)
         float t = 0.5 * (dir._y + 1.0);
         return (1.0 - t) * rt::Vector3(1.0, 1.0, 1.0) + t * rt::Vector3(0.5, 0.7, 1.0);
     }
+}
+
+rt::Vector3 GammaCorrection(const rt::Vector3 col)
+{
+    return rt::Vector3(sqrt(col.r()), sqrt(col.g()), sqrt(col.b()));
 }
 
 int main()
@@ -67,7 +70,6 @@ int main()
     rt::Hitable* world = new rt::HitableList(list, 2);
     rt::Camera mainCamera;
 
-    std::default_random_engine random(time(nullptr));
     std::uniform_real_distribution<double> dis(0.0, 1.0);
     int sampleCount = 100;
     for (int j = HEIGHT - 1; j >= 0; --j)
@@ -84,11 +86,13 @@ int main()
             }
 
             col /= float(sampleCount);
+            col = GammaCorrection(col);
+            col *= 255;
 
             int rowIndex = HEIGHT - 1 - j;
-            images[rowIndex][i * 4] = int(col.r() * 255);
-            images[rowIndex][i * 4 + 1] = int(col.g() * 255);
-            images[rowIndex][i * 4 + 2] = int(col.b() * 255);
+            images[rowIndex][i * 4] = int(col.r());
+            images[rowIndex][i * 4 + 1] = int(col.g());
+            images[rowIndex][i * 4 + 2] = int(col.b());
             images[rowIndex][i * 4 + 3] = 255;
             imageOutput << int(255.99 * col._x) << " " << int(255.99 * col._y) << " " << int(255.99 * col._z) << "\n";
         }
