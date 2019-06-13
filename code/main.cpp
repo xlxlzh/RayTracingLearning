@@ -94,7 +94,7 @@ int main()
             images[rowIndex][i * 4 + 1] = int(col.g());
             images[rowIndex][i * 4 + 2] = int(col.b());
             images[rowIndex][i * 4 + 3] = 255;
-            imageOutput << int(255.99 * col._x) << " " << int(255.99 * col._y) << " " << int(255.99 * col._z) << "\n";
+            imageOutput << int(col._x) << " " << int(col._y) << " " << int(col._z) << "\n";
         }
     }
 
