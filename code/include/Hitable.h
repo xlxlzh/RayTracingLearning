@@ -5,11 +5,14 @@
 
 namespace rt
 {
+    class Material;
+
     struct HitRecord
     {
         float t;
         Vector3 p;
         Vector3 normal;
+        Material* mat;
     };
 
     class Hitable

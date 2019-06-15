@@ -22,4 +22,9 @@
 
 ![](https://github.com/xlxlzh/RayTracingLearning/raw/master/images/image_aa.png)
 
+#### Diffuse
+
 ![](https://github.com/xlxlzh/RayTracingLearning/raw/master/images/image_diffuse.png)
+
+#### Material
+![](https://github.com/xlxlzh/RayTracingLearning/raw/master/images/image_material.png)

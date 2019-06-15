@@ -1,3 +1,6 @@
+#ifndef _VECTOR3_H_
+#define _VECTOR3_H_
+
 #include <cmath>
 
 namespace rt
@@ -76,3 +79,5 @@ namespace rt
         return vec / vec.length();
     }
 }
+
+#endif

@@ -1,8 +1,6 @@
 #include <iostream>
 #include <fstream>
 #include <cfloat>
-#include <random>
-#include <ctime>
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 
 #include "include/stb/stb_image_write.h"
@@ -10,65 +8,65 @@
 #include "include/HitableList.h"
 #include "include/Sphere.h"
 #include "include/Camera.h"
+#include "include/Utilities.h"
+#include "include/Material.h"
+
+using namespace rt;
 
 const int WIDTH = 400;
 const int HEIGHT = 200;
 
-std::default_random_engine random(time(nullptr));
 
-rt::Vector3 RandomInUnitSphere()
+Vector3 Color(const Ray& ray, const Hitable* world, int depth)
 {
-    std::uniform_real_distribution<double> dis(0.0, 1.0);
-
-    rt::Vector3 p;
-    do
-    {
-        p = 2.0 * rt::Vector3(dis(random), dis(random), dis(random)) - rt::Vector3(1.0, 1.0, 1.0);
-    } while (p.squaredLength() >= 1.0);
-
-    return p;
-}
-
-rt::Vector3 Color(const rt::Ray& ray, const rt::Hitable* world)
-{
-    rt::HitRecord rec;
+    HitRecord rec;
     if (world->rayCast(ray, 0.001, FLT_MAX, rec))
     {
-        rt::Vector3 target = rec.p + rec.normal + RandomInUnitSphere();
-        return 0.5 * Color(rt::Ray(rec.p, target - rec.p), world);
+        Ray scattered;
+        Vector3 attenuation;
+        if (depth < 50 && rec.mat->scatter(ray, rec, attenuation, scattered))
+        {
+            return attenuation * Color(scattered, world, depth + 1);
+        }
+        else
+        {
+            return Vector3(0.0, 0.0, 0.0);
+        }
     }
     else
     {
-        rt::Vector3 dir = rt::MakeUnit(ray.getDirection());
+        Vector3 dir = MakeUnit(ray.getDirection());
         float t = 0.5 * (dir._y + 1.0);
-        return (1.0 - t) * rt::Vector3(1.0, 1.0, 1.0) + t * rt::Vector3(0.5, 0.7, 1.0);
+        return (1.0 - t) * Vector3(1.0, 1.0, 1.0) + t * Vector3(0.5, 0.7, 1.0);
     }
 }
 
-rt::Vector3 GammaCorrection(const rt::Vector3 col)
+Vector3 GammaCorrection(const Vector3 col)
 {
-    return rt::Vector3(sqrt(col.r()), sqrt(col.g()), sqrt(col.b()));
+    return Vector3(sqrt(col.r()), sqrt(col.g()), sqrt(col.b()));
 }
 
 int main()
 {
     unsigned char images[HEIGHT][WIDTH * 4] = { 0 };
 
-    rt::Vector3 leftCorner(-2.0, -1.0, -1.0);
-    rt::Vector3 horizontal(4.0, 0.0, 0.0);
-    rt::Vector3 vertical(0.0, 2.0, 0.0);
-    rt::Vector3 origin(0.0, 0.0, 0.0);
+    Vector3 leftCorner(-2.0, -1.0, -1.0);
+    Vector3 horizontal(4.0, 0.0, 0.0);
+    Vector3 vertical(0.0, 2.0, 0.0);
+    Vector3 origin(0.0, 0.0, 0.0);
 
     std::ofstream imageOutput;
     imageOutput.open("image_debug.ppm");
     imageOutput << "P3\n" << WIDTH << " " << HEIGHT << "\n255\n";
 
-    rt::Hitable* list[2] = { nullptr };
-    list[0] = new rt::Sphere(rt::Vector3(0.0, 0.0, -1.0), 0.5);
-    list[1] = new rt::Sphere(rt::Vector3(0.0, -100.5, -1.0), 100);
+    Hitable* list[4] = { nullptr };
+    list[0] = new Sphere(Vector3(0.0, 0.0, -1.0), 0.5, new Lambertian(Vector3(0.8, 0.3, 0.3)));
+    list[1] = new Sphere(Vector3(0.0, -100.5, -1.0), 100, new Lambertian(Vector3(0.8, 0.8, 0.0)));
+    list[2] = new Sphere(Vector3(1.0, 0.0, -1.0), 0.5, new Metal(Vector3(0.8, 0.6, 0.2), 1.0));
+    list[3] = new Sphere(Vector3(-1.0, 0.0, -1.0), 0.5, new Metal(Vector3(0.8, 0.8, 0.8), 0.3));
 
-    rt::Hitable* world = new rt::HitableList(list, 2);
-    rt::Camera mainCamera;
+    Hitable* world = new HitableList(list, 4);
+    Camera mainCamera;
 
     std::uniform_real_distribution<double> dis(0.0, 1.0);
     int sampleCount = 100;
@@ -76,13 +74,13 @@ int main()
     {
         for (int i = 0; i < WIDTH; ++i)
         {
-            rt::Vector3 col(0.0, 0.0, 0.);
+            Vector3 col(0.0, 0.0, 0.);
             for (int s = 0; s < sampleCount; ++s)
             {
                 float u = float(i + dis(random)) / float(WIDTH);
                 float v = float(j + dis(random)) / float(HEIGHT);
-                rt::Ray ray = mainCamera.getRay(u, v);
-                col += Color(ray, world);
+                Ray ray = mainCamera.getRay(u, v);
+                col += Color(ray, world, 0);
             }
 
             col /= float(sampleCount);

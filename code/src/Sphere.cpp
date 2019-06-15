@@ -17,6 +17,7 @@ namespace rt
                 rec.t = temp;
                 rec.p = ray.rayCast(rec.t);
                 rec.normal = (rec.p - _center) / _radius;
+                rec.mat = _material;
                 return true;
             }
 
@@ -26,6 +27,7 @@ namespace rt
                 rec.t = temp;
                 rec.p = ray.rayCast(rec.t);
                 rec.normal = (rec.p - _center) / _radius;
+                rec.mat = _material;
                 return true;
             }
         }
