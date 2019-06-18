@@ -59,13 +59,14 @@ int main()
     imageOutput.open("image_debug.ppm");
     imageOutput << "P3\n" << WIDTH << " " << HEIGHT << "\n255\n";
 
-    Hitable* list[4] = { nullptr };
-    list[0] = new Sphere(Vector3(0.0, 0.0, -1.0), 0.5, new Lambertian(Vector3(0.8, 0.3, 0.3)));
+    Hitable* list[5] = { nullptr };
+    list[0] = new Sphere(Vector3(0.0, 0.0, -1.0), 0.5, new Lambertian(Vector3(0.1, 0.2, 0.5)));
     list[1] = new Sphere(Vector3(0.0, -100.5, -1.0), 100, new Lambertian(Vector3(0.8, 0.8, 0.0)));
-    list[2] = new Sphere(Vector3(1.0, 0.0, -1.0), 0.5, new Metal(Vector3(0.8, 0.6, 0.2), 1.0));
-    list[3] = new Sphere(Vector3(-1.0, 0.0, -1.0), 0.5, new Metal(Vector3(0.8, 0.8, 0.8), 0.3));
+    list[2] = new Sphere(Vector3(1.0, 0.0, -1.0), 0.5, new Metal(Vector3(0.8, 0.6, 0.2), 0.3));
+    list[3] = new Sphere(Vector3(-1.0, 0.0, -1.0), 0.5, new Dielectric(1.5));
+    list[4] = new Sphere(Vector3(-1.0, 0.0, -1.0), -0.45, new Dielectric(1.5));
 
-    Hitable* world = new HitableList(list, 4);
+    Hitable* world = new HitableList(list, 5);
     Camera mainCamera;
 
     std::uniform_real_distribution<double> dis(0.0, 1.0);

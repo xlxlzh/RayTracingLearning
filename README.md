@@ -28,3 +28,6 @@
 
 #### Material
 ![](https://github.com/xlxlzh/RayTracingLearning/raw/master/images/image_material.png)
+
+#### Dielectric
+![](https://github.com/xlxlzh/RayTracingLearning/raw/master/images/image_dielectric.png)

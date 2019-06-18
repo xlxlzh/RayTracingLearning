@@ -47,6 +47,59 @@ namespace rt
         Vector3 _albedo;
         float _fuzz;
     };
+
+    class Dielectric : public Material
+    {
+    public:
+        Dielectric(float ri) : _refIndex(ri) { }
+
+        virtual bool scatter(const Ray& rayIn, const HitRecord& rec, Vector3& attenuation, Ray& scattered) override
+        {
+            Vector3 outwardNormal;
+            Vector3 reflected = Reflect(rayIn.getDirection(), rec.normal);
+            float niOverHt = 0.0f;
+            attenuation = Vector3(1.0, 1.0, 1.0);
+
+            float reflectProb;
+            float cosine;
+            Vector3 refracted;
+            if (Dot(rayIn.getDirection(), rec.normal) > 0)
+            {
+                outwardNormal = -rec.normal;
+                niOverHt = _refIndex;
+                cosine = _refIndex * Dot(rayIn.getDirection(), rec.normal) / rayIn.getDirection().length();
+            }
+            else
+            {
+                outwardNormal = rec.normal;
+                niOverHt = 1.0 / _refIndex;
+                cosine = -Dot(rayIn.getDirection(), rec.normal) / rayIn.getDirection().length();
+            }
+
+            if (Refract(rayIn.getDirection(), outwardNormal, niOverHt, refracted))
+            {
+                reflectProb = Schlick(cosine, _refIndex);
+            }
+            else
+            {
+                scattered = Ray(rec.p, reflected);
+                reflectProb = 1.0;
+            }
+
+            if (Random021() < reflectProb)
+            {
+                scattered = Ray(rec.p, reflected);
+            }
+            else
+            {
+                scattered = Ray(rec.p, refracted);
+            }
+
+            return true;
+        }
+
+        float _refIndex;
+    };
 }
 
 #endif
