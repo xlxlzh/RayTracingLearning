@@ -31,3 +31,7 @@
 
 #### Dielectric
 ![](https://github.com/xlxlzh/RayTracingLearning/raw/master/images/image_dielectric.png)
+
+#### Camera
+
+![](https://github.com/xlxlzh/RayTracingLearning/raw/master/images/image_camera.png)

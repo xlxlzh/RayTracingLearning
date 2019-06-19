@@ -67,7 +67,7 @@ int main()
     list[4] = new Sphere(Vector3(-1.0, 0.0, -1.0), -0.45, new Dielectric(1.5));
 
     Hitable* world = new HitableList(list, 5);
-    Camera mainCamera;
+    Camera mainCamera(Vector3(-2.0, 2.0, 1.0), Vector3(0.0, 0.0, -1.0), Vector3(0.0, 1.0, 0.0), 30.0, (float)WIDTH / (float)HEIGHT);
 
     std::uniform_real_distribution<double> dis(0.0, 1.0);
     int sampleCount = 100;
