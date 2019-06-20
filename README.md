@@ -39,3 +39,7 @@
 #### Defocus Blur
 
 ![](https://github.com/xlxlzh/RayTracingLearning/raw/master/images/image_defocus blur.png)
+
+#### Random Scene
+
+![](https://github.com/xlxlzh/RayTracingLearning/raw/master/images/image_randomscene.png)
