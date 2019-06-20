@@ -56,6 +56,19 @@ namespace rt
 
         return p;
     }
+
+    rt::Vector3 RandomInUnitDisk()
+    {
+        std::uniform_real_distribution<double> dis(0.0, 1.0);
+
+        rt::Vector3 p;
+        do
+        {
+            p = 2.0 * rt::Vector3(dis(random), dis(random), 0.0) - rt::Vector3(1.0, 1.0, 0.0);
+        } while (Dot(p, p) >= 1.0);
+
+        return p;
+    }
 }
 
 #endif

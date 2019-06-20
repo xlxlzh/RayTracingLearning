@@ -35,3 +35,7 @@
 #### Camera
 
 ![](https://github.com/xlxlzh/RayTracingLearning/raw/master/images/image_camera.png)
+
+#### Defocus Blur
+
+![](https://github.com/xlxlzh/RayTracingLearning/raw/master/images/image_defocus blur.png)

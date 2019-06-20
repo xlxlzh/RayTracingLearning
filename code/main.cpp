@@ -65,9 +65,13 @@ int main()
     list[2] = new Sphere(Vector3(1.0, 0.0, -1.0), 0.5, new Metal(Vector3(0.8, 0.6, 0.2), 0.3));
     list[3] = new Sphere(Vector3(-1.0, 0.0, -1.0), 0.5, new Dielectric(1.5));
     list[4] = new Sphere(Vector3(-1.0, 0.0, -1.0), -0.45, new Dielectric(1.5));
-
     Hitable* world = new HitableList(list, 5);
-    Camera mainCamera(Vector3(-2.0, 2.0, 1.0), Vector3(0.0, 0.0, -1.0), Vector3(0.0, 1.0, 0.0), 30.0, (float)WIDTH / (float)HEIGHT);
+
+    Vector3 lookFrom(3.0, 3.0, 2.0);
+    Vector3 lookAt(0.0, 0.0, -1.0);
+    float distFocus = (lookFrom - lookAt).length();
+    float aperture = 2.0;
+    Camera mainCamera(lookFrom, lookAt, Vector3(0.0, 1.0, 0.0), 20.0, (float)WIDTH / (float)HEIGHT, aperture, distFocus);
 
     std::uniform_real_distribution<double> dis(0.0, 1.0);
     int sampleCount = 100;
