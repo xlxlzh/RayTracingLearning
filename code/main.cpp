@@ -13,8 +13,8 @@
 
 using namespace rt;
 
-const int WIDTH = 400;
-const int HEIGHT = 200;
+const int WIDTH = 1920;
+const int HEIGHT = 1080;
 
 
 Vector3 Color(const Ray& ray, const Hitable* world, int depth)
@@ -46,10 +46,52 @@ Vector3 GammaCorrection(const Vector3 col)
     return Vector3(sqrt(col.r()), sqrt(col.g()), sqrt(col.b()));
 }
 
+Hitable* RandomScene()
+{
+    int n = 500;
+    Hitable** list = new Hitable*[n + 1];
+    list[0] = new Sphere(Vector3(0.0, -1000.0, 0.0), 1000.0, new Lambertian(Vector3(0.5, 0.5, 0.5)));
+    int i = 1;
+    for (int a = -11; a < 11; ++a)
+    {
+        for (int b = -11; b < 11; ++b)
+        {
+            float chooseMat = Random021();
+            Vector3 center(a + 0.9 * Random021(), 0.2, b + 0.9 * Random021());
+            if ((center - Vector3(4.0, 0.2, 0.0)).length() > 0.9)
+            {
+                if (chooseMat < 0.8)
+                {
+                    list[i++] = new Sphere(center, 0.2, new Lambertian(Vector3(Random021() * Random021(), Random021() * Random021(), Random021() * Random021())));
+                }
+                else if (chooseMat < 0.95)
+                {
+                    list[i++] = new Sphere(center, 0.2, new Metal(Vector3(0.5 * (1.0 + Random021()), 0.5 * (1.0 + Random021()), 0.5 * (1.0 + Random021())), 0.5 * Random021()));
+                }
+                else
+                {
+                    list[i++] = new Sphere(center, 0.2, new Dielectric(1.5));
+                }
+            }
+        }
+    }
+
+    list[i++] = new Sphere(Vector3(0.0, 1.0, 0.0), 1.0, new Dielectric(1.5));
+    list[i++] = new Sphere(Vector3(-4.0, 1.0, 0.0), 1.0, new Lambertian(Vector3(0.4, 0.2, 0.1)));
+    list[i++] = new Sphere(Vector3(4.0, 1.0, 0.0), 1.0, new Metal(Vector3(0.7, 0.6, 0.5), 0.0));
+
+    return new HitableList(list, i);
+}
+
+// void RendererPatch(int from, int to)
+// {
+// 
+// }
+
+unsigned char images[HEIGHT][WIDTH * 4] = { 0 };
+
 int main()
 {
-    unsigned char images[HEIGHT][WIDTH * 4] = { 0 };
-
     Vector3 leftCorner(-2.0, -1.0, -1.0);
     Vector3 horizontal(4.0, 0.0, 0.0);
     Vector3 vertical(0.0, 2.0, 0.0);
@@ -65,16 +107,17 @@ int main()
     list[2] = new Sphere(Vector3(1.0, 0.0, -1.0), 0.5, new Metal(Vector3(0.8, 0.6, 0.2), 0.3));
     list[3] = new Sphere(Vector3(-1.0, 0.0, -1.0), 0.5, new Dielectric(1.5));
     list[4] = new Sphere(Vector3(-1.0, 0.0, -1.0), -0.45, new Dielectric(1.5));
-    Hitable* world = new HitableList(list, 5);
+    Hitable* world = RandomScene();
 
-    Vector3 lookFrom(3.0, 3.0, 2.0);
-    Vector3 lookAt(0.0, 0.0, -1.0);
-    float distFocus = (lookFrom - lookAt).length();
-    float aperture = 2.0;
+    Vector3 lookFrom(13.0, 2.0, 3.0);
+    Vector3 lookAt(0.0, 0.0, 0.0);
+    float distFocus = 10.0;
+    float aperture = 0.1;
+
     Camera mainCamera(lookFrom, lookAt, Vector3(0.0, 1.0, 0.0), 20.0, (float)WIDTH / (float)HEIGHT, aperture, distFocus);
 
     std::uniform_real_distribution<double> dis(0.0, 1.0);
-    int sampleCount = 100;
+    int sampleCount = 10;
     for (int j = HEIGHT - 1; j >= 0; --j)
     {
         for (int i = 0; i < WIDTH; ++i)
