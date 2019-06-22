@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <cfloat>
+#include <thread>
+#include <memory>
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 
 #include "include/stb/stb_image_write.h"
@@ -83,50 +85,23 @@ Hitable* RandomScene()
     return new HitableList(list, i);
 }
 
-// void RendererPatch(int from, int to)
-// {
-// 
-// }
-
 unsigned char images[HEIGHT][WIDTH * 4] = { 0 };
+int sampleCount = 10;
 
-int main()
+void RendererPatch(int from, int to, Camera& mainCamera, Hitable* world)
 {
-    Vector3 leftCorner(-2.0, -1.0, -1.0);
-    Vector3 horizontal(4.0, 0.0, 0.0);
-    Vector3 vertical(0.0, 2.0, 0.0);
-    Vector3 origin(0.0, 0.0, 0.0);
-
-    std::ofstream imageOutput;
-    imageOutput.open("image_debug.ppm");
-    imageOutput << "P3\n" << WIDTH << " " << HEIGHT << "\n255\n";
-
-    Hitable* list[5] = { nullptr };
-    list[0] = new Sphere(Vector3(0.0, 0.0, -1.0), 0.5, new Lambertian(Vector3(0.1, 0.2, 0.5)));
-    list[1] = new Sphere(Vector3(0.0, -100.5, -1.0), 100, new Lambertian(Vector3(0.8, 0.8, 0.0)));
-    list[2] = new Sphere(Vector3(1.0, 0.0, -1.0), 0.5, new Metal(Vector3(0.8, 0.6, 0.2), 0.3));
-    list[3] = new Sphere(Vector3(-1.0, 0.0, -1.0), 0.5, new Dielectric(1.5));
-    list[4] = new Sphere(Vector3(-1.0, 0.0, -1.0), -0.45, new Dielectric(1.5));
-    Hitable* world = RandomScene();
-
-    Vector3 lookFrom(13.0, 2.0, 3.0);
-    Vector3 lookAt(0.0, 0.0, 0.0);
-    float distFocus = 10.0;
-    float aperture = 0.1;
-
-    Camera mainCamera(lookFrom, lookAt, Vector3(0.0, 1.0, 0.0), 20.0, (float)WIDTH / (float)HEIGHT, aperture, distFocus);
-
-    std::uniform_real_distribution<double> dis(0.0, 1.0);
-    int sampleCount = 10;
-    for (int j = HEIGHT - 1; j >= 0; --j)
+    static int count = 0;
+    std::cout << count << std::endl;
+    ++count;
+    for (int j = from; j >= to; --j)
     {
         for (int i = 0; i < WIDTH; ++i)
         {
             Vector3 col(0.0, 0.0, 0.);
             for (int s = 0; s < sampleCount; ++s)
             {
-                float u = float(i + dis(random)) / float(WIDTH);
-                float v = float(j + dis(random)) / float(HEIGHT);
+                float u = float(i + Random021()) / float(WIDTH);
+                float v = float(j + Random021()) / float(HEIGHT);
                 Ray ray = mainCamera.getRay(u, v);
                 col += Color(ray, world, 0);
             }
@@ -140,12 +115,42 @@ int main()
             images[rowIndex][i * 4 + 1] = int(col.g());
             images[rowIndex][i * 4 + 2] = int(col.b());
             images[rowIndex][i * 4 + 3] = 255;
-            imageOutput << int(col._x) << " " << int(col._y) << " " << int(col._z) << "\n";
         }
     }
+}
 
-    imageOutput.close();
+const int MAX_THREAD = 8;
+
+using ThreadPtr = std::shared_ptr<std::thread>;
+
+int main()
+{
+    Hitable* world = RandomScene();
+
+    Vector3 lookFrom(13.0, 2.0, 3.0);
+    Vector3 lookAt(0.0, 0.0, 0.0);
+    float distFocus = 10.0;
+    float aperture = 0.1;
+
+    Camera mainCamera(lookFrom, lookAt, Vector3(0.0, 1.0, 0.0), 20.0, (float)WIDTH / (float)HEIGHT, aperture, distFocus);
+
+    std::vector<ThreadPtr> threadArr;
+
+    int heightPreThread = HEIGHT / MAX_THREAD;
+    for (int i = 0; i < MAX_THREAD; ++i)
+    {
+        ThreadPtr ptr = ThreadPtr(new std::thread(RendererPatch, heightPreThread * (i + 1) - 1, heightPreThread * i, mainCamera, world));
+        threadArr.push_back(ptr);
+    }
+
+    for (auto patch : threadArr)
+    {
+        patch->join();
+    }
+
     stbi_write_png("image.png", WIDTH, HEIGHT, 4, images, 0);
+
+    system("pause");
 
     return 0;
 }
