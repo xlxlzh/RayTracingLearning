@@ -15,8 +15,8 @@
 
 using namespace rt;
 
-const int WIDTH = 1920;
-const int HEIGHT = 1080;
+const int WIDTH = 4096;
+const int HEIGHT = 2160;
 
 
 Vector3 Color(const Ray& ray, const Hitable* world, int depth)
@@ -86,7 +86,7 @@ Hitable* RandomScene()
 }
 
 unsigned char images[HEIGHT][WIDTH * 4] = { 0 };
-int sampleCount = 10;
+int sampleCount = 100;
 
 void RendererPatch(int from, int to, Camera& mainCamera, Hitable* world)
 {
@@ -119,7 +119,7 @@ void RendererPatch(int from, int to, Camera& mainCamera, Hitable* world)
     }
 }
 
-const int MAX_THREAD = 8;
+const int MAX_THREAD = 12;
 
 using ThreadPtr = std::shared_ptr<std::thread>;
 

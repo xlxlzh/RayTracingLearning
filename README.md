@@ -42,4 +42,4 @@
 
 #### Random Scene
 
-![](https://github.com/xlxlzh/RayTracingLearning/raw/master/images/image_randomscene.png)
+![](https://github.com/xlxlzh/RayTracingLearning/raw/master/images/image_first.png)
