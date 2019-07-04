@@ -90,9 +90,6 @@ int sampleCount = 100;
 
 void RendererPatch(int from, int to, Camera& mainCamera, Hitable* world)
 {
-    static int count = 0;
-    std::cout << count << std::endl;
-    ++count;
     for (int j = from; j >= to; --j)
     {
         for (int i = 0; i < WIDTH; ++i)
