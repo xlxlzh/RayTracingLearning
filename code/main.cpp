@@ -129,7 +129,7 @@ int main()
     float distFocus = 10.0;
     float aperture = 0.1;
 
-    Camera mainCamera(lookFrom, lookAt, Vector3(0.0, 1.0, 0.0), 20.0, (float)WIDTH / (float)HEIGHT, aperture, distFocus);
+    Camera mainCamera(lookFrom, lookAt, Vector3(0.0, 1.0, 0.0), 20.0, (float)WIDTH / (float)HEIGHT, aperture, distFocus, 0.0, 1.0);
 
     std::vector<ThreadPtr> threadArr;
 

@@ -11,8 +11,11 @@ namespace rt
     class Camera
     {
     public:
-        Camera(Vector3 lookFrom, Vector3 lookAt, Vector3 up, float fov, float aspect, float aperture, float focusDist)
+        Camera(Vector3 lookFrom, Vector3 lookAt, Vector3 up, float fov, float aspect, float aperture, float focusDist, float time0, float time1)
         {
+            _time0 = time0;
+            _time1 = time1;
+
             _lensRadius = aperture / 2.0;
             float theta = fov * RT_PI / 180;
             float halfHeight = tan(theta / 2.0);
@@ -34,7 +37,8 @@ namespace rt
         { 
             Vector3 rd = _lensRadius * RandomInUnitDisk();
             Vector3 offset = _u * rd._x + _v * rd._y;
-            return Ray(_origin + offset, _leftCorner + s * _horizontal + t * _vertical - _origin - offset);
+            float currentTime = _time0 + Random021() * (_time1 - _time0);
+            return Ray(_origin + offset, _leftCorner + s * _horizontal + t * _vertical - _origin - offset, currentTime);
         }
 
     public:
@@ -45,6 +49,8 @@ namespace rt
         Vector3 _u, _v, _w;
 
         float _lensRadius;
+
+        float _time0, _time1;
     };
 }
 
