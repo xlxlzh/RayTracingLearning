@@ -20,7 +20,7 @@ namespace rt
         virtual bool scatter(const Ray& rayIn, const HitRecord& rec, Vector3& attenuation, Ray& scattered) override
         {
             Vector3 target = rec.p + rec.normal + RandomInUnitSphere();
-            scattered = Ray(rec.p, target - rec.p);
+            scattered = Ray(rec.p, target - rec.p, rayIn.time());
             attenuation = _albedo;
             return true;
         }

@@ -12,11 +12,12 @@
 #include "include/Camera.h"
 #include "include/Utilities.h"
 #include "include/Material.h"
+#include "include/MovingSphere.h"
 
 using namespace rt;
 
-const int WIDTH = 4096;
-const int HEIGHT = 2160;
+const int WIDTH = 2048;
+const int HEIGHT = 1080;
 
 
 Vector3 Color(const Ray& ray, const Hitable* world, int depth)
@@ -54,9 +55,9 @@ Hitable* RandomScene()
     Hitable** list = new Hitable*[n + 1];
     list[0] = new Sphere(Vector3(0.0, -1000.0, 0.0), 1000.0, new Lambertian(Vector3(0.5, 0.5, 0.5)));
     int i = 1;
-    for (int a = -11; a < 11; ++a)
+    for (int a = -10; a < 10; ++a)
     {
-        for (int b = -11; b < 11; ++b)
+        for (int b = -10; b < 10; ++b)
         {
             float chooseMat = Random021();
             Vector3 center(a + 0.9 * Random021(), 0.2, b + 0.9 * Random021());
@@ -64,7 +65,7 @@ Hitable* RandomScene()
             {
                 if (chooseMat < 0.8)
                 {
-                    list[i++] = new Sphere(center, 0.2, new Lambertian(Vector3(Random021() * Random021(), Random021() * Random021(), Random021() * Random021())));
+                    list[i++] = new MovingSphere(center, center + Vector3(0.0, 0.5 * Random021(), 0.0), 0.0, 1.0, 0.2, new Lambertian(Vector3(Random021() * Random021(), Random021() * Random021(), Random021() * Random021())));
                 }
                 else if (chooseMat < 0.95)
                 {
@@ -127,7 +128,7 @@ int main()
     Vector3 lookFrom(13.0, 2.0, 3.0);
     Vector3 lookAt(0.0, 0.0, 0.0);
     float distFocus = 10.0;
-    float aperture = 0.1;
+    float aperture = 0.0;
 
     Camera mainCamera(lookFrom, lookAt, Vector3(0.0, 1.0, 0.0), 20.0, (float)WIDTH / (float)HEIGHT, aperture, distFocus, 0.0, 1.0);
 

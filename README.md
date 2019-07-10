@@ -49,3 +49,7 @@
 ---
 
 ### Next week
+
+#### Motion Blur
+
+![](https://github.com/xlxlzh/RayTracingLearning/raw/master/images/image_motionblur.png)
