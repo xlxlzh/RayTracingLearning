@@ -13,6 +13,8 @@ namespace rt
 
         bool rayCast(const Ray& ray, float tMin, float tMax, HitRecord& rec) const override;
 
+        bool boundingBox(float t0, float t1, AABB& box) override;
+
     private:
         Vector3 _center;
         float _radius;

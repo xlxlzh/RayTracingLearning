@@ -1,4 +1,5 @@
 #include "../include/Sphere.h"
+#include "../include/AABB.h"
 
 namespace rt
 {
@@ -33,5 +34,11 @@ namespace rt
         }
         
         return false;
+    }
+
+    bool Sphere::boundingBox(float t0, float t1, AABB& box)
+    {
+        box = AABB(_center - Vector3(_radius, _radius, _radius), _center + Vector3(_radius, _radius, _radius));
+        return true;
     }
 }

@@ -12,6 +12,8 @@
 #include "include/Camera.h"
 #include "include/Utilities.h"
 #include "include/Material.h"
+#include "include/Texture.h"
+#include "include/BvhNode.h"
 
 using namespace rt;
 
@@ -52,7 +54,8 @@ Hitable* RandomScene()
 {
     int n = 500;
     Hitable** list = new Hitable*[n + 1];
-    list[0] = new Sphere(Vector3(0.0, -1000.0, 0.0), 1000.0, new Lambertian(Vector3(0.5, 0.5, 0.5)));
+    list[0] = new Sphere(Vector3(0.0, -1000.0, 0.0), 1000.0,
+        new Lambertian(new CheckerTexture(new ConstTexture(Vector3(0.2, 0.3, 0.1)), new ConstTexture(Vector3(0.9, 0.9, 0.9)))));
     int i = 1;
     for (int a = -11; a < 11; ++a)
     {
@@ -64,7 +67,7 @@ Hitable* RandomScene()
             {
                 if (chooseMat < 0.8)
                 {
-                    list[i++] = new Sphere(center, 0.2, new Lambertian(Vector3(Random021() * Random021(), Random021() * Random021(), Random021() * Random021())));
+                    list[i++] = new Sphere(center, 0.2, new Lambertian(new ConstTexture(Vector3(Random021() * Random021(), Random021() * Random021(), Random021() * Random021()))));
                 }
                 else if (chooseMat < 0.95)
                 {
@@ -79,10 +82,10 @@ Hitable* RandomScene()
     }
 
     list[i++] = new Sphere(Vector3(0.0, 1.0, 0.0), 1.0, new Dielectric(1.5));
-    list[i++] = new Sphere(Vector3(-4.0, 1.0, 0.0), 1.0, new Lambertian(Vector3(0.4, 0.2, 0.1)));
+    list[i++] = new Sphere(Vector3(-4.0, 1.0, 0.0), 1.0, new Lambertian(new ConstTexture(Vector3(0.4, 0.2, 0.1))));
     list[i++] = new Sphere(Vector3(4.0, 1.0, 0.0), 1.0, new Metal(Vector3(0.7, 0.6, 0.5), 0.0));
 
-    return new HitableList(list, i);
+    return new BvhNode(list, i, 0.0, 1.0);
 }
 
 unsigned char images[HEIGHT][WIDTH * 4] = { 0 };

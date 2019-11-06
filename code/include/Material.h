@@ -3,6 +3,7 @@
 
 #include "Hitable.h"
 #include "Utilities.h"
+#include "Texture.h"
 
 namespace rt
 {
@@ -15,17 +16,17 @@ namespace rt
     class Lambertian : public Material
     {
     public:
-        Lambertian(const Vector3& albedo) : _albedo(albedo) { }
+        Lambertian(Texture* albedo) : _albedo(albedo) { }
 
         virtual bool scatter(const Ray& rayIn, const HitRecord& rec, Vector3& attenuation, Ray& scattered) override
         {
             Vector3 target = rec.p + rec.normal + RandomInUnitSphere();
             scattered = Ray(rec.p, target - rec.p);
-            attenuation = _albedo;
+            attenuation =  _albedo->value(0.0f, 0.0f, rec.p);
             return true;
         }
 
-        Vector3 _albedo;
+        Texture* _albedo;
     };
 
     class Metal : public Material

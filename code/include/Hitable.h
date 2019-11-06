@@ -6,6 +6,7 @@
 namespace rt
 {
     class Material;
+    class AABB;
 
     struct HitRecord
     {
@@ -19,6 +20,7 @@ namespace rt
     {
     public:
         virtual bool rayCast(const Ray& ray, float tMin, float tMax, HitRecord& rec) const = 0;
+        virtual bool boundingBox(float t0, float t1, AABB& box) = 0;
     };
 }
 

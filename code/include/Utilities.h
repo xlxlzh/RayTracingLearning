@@ -8,12 +8,12 @@
 
 namespace rt
 {
-    Vector3 Reflect(const Vector3& v, const Vector3& n)
+    static Vector3 Reflect(const Vector3& v, const Vector3& n)
     {
         return v - 2.0 * Dot(v, n) * n;
     }
 
-    bool Refract(const Vector3& v, const Vector3& n, float niOverNt, Vector3& refracted)
+    static bool Refract(const Vector3& v, const Vector3& n, float niOverNt, Vector3& refracted)
     {
         Vector3 uv = MakeUnit(v);
         float dt = Dot(uv, n);
@@ -29,22 +29,22 @@ namespace rt
         }
     }
 
-    float Schlick(float cosine, float refIdx)
+    static float Schlick(float cosine, float refIdx)
     {
         float r0 = (1.0 - refIdx) / (1.0 + refIdx);
         r0 = r0 * r0;
         return r0 + (1.0 - r0) * pow(1.0 - cosine, 5);
     }
 
-    std::default_random_engine random(time(nullptr));
+    static std::default_random_engine random(time(nullptr));
 
-    float Random021()
+    static float Random021()
     {
         std::uniform_real_distribution<double> dis(0.0, 1.0);
         return dis(random);
     }
 
-    rt::Vector3 RandomInUnitSphere()
+    static rt::Vector3 RandomInUnitSphere()
     {
         std::uniform_real_distribution<double> dis(0.0, 1.0);
 
@@ -57,7 +57,7 @@ namespace rt
         return p;
     }
 
-    rt::Vector3 RandomInUnitDisk()
+    static rt::Vector3 RandomInUnitDisk()
     {
         std::uniform_real_distribution<double> dis(0.0, 1.0);
 

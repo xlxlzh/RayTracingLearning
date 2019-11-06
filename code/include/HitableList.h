@@ -13,6 +13,8 @@ namespace rt
 
         virtual bool rayCast(const Ray& ray, float tMin, float tMax, HitRecord& rec) const override;
 
+        bool boundingBox(float t0, float t1, AABB& box) override;
+
         Hitable** _list;
         int _size;
     };
