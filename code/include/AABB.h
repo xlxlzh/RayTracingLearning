@@ -33,9 +33,9 @@ namespace rt
             ffmin(box0.min()._y, box1.min()._y),
             ffmin(box0.min()._z, box1.min()._z));
 
-        Vector3 big(ffmax(box0.min()._x, box1.min()._x),
-            ffmax(box0.min()._y, box1.min()._y),
-            ffmax(box0.min()._z, box1.min()._z));
+        Vector3 big(ffmax(box0.max()._x, box1.max()._x),
+            ffmax(box0.max()._y, box1.max()._y),
+            ffmax(box0.max()._z, box1.max()._z));
 
         return AABB(small, big);
     }
