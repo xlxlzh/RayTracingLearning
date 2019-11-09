@@ -52,8 +52,8 @@
 
 #### Motion Blur
 
-![](https://github.com/xlxlzh/RayTracingLearning/raw/master/images/image_motionblur.png)
+![](https://github.com/xlxlzh/RayTracingLearning/raw/next-week/images/image_motionblur.png)
 
 #### Texture
 
-![](https://github.com/xlxlzh/RayTracingLearning/raw/master/images/soild_textures.png)
+ ![](https://github.com/xlxlzh/RayTracingLearning/raw/next-week/images/solid_textures.png)
