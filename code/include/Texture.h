@@ -2,6 +2,7 @@
 #define _TEXTURE_H_
 
 #include "Vector3.h"
+#include "Perlin.h"
 
 namespace rt
 {
@@ -51,6 +52,20 @@ namespace rt
     public:
         Texture* _odd;
         Texture* _even;
+    };
+
+    class NoiseTexture : public Texture
+    {
+    public:
+        NoiseTexture() = default;
+
+        virtual Vector3 value(float u, float v, const Vector3& p) const override
+        {
+            return Vector3(1.0f, 1.0f, 1.0f) * _noise.noise(p);
+        }
+
+    public:
+        Perlin _noise;
     };
 }
 
